@@ -7,22 +7,23 @@ const app = new Vue ({
     el: "#app",
 
     data:{
-        url:"https://api.themoviedb.org/3/search/movie",
+        urlM:"https://api.themoviedb.org/3/search/movie",
+        urlS:"https://api.themoviedb.org/3/search/tv",
         apiKey:"96db8a45cc612ab5f1bf96bcc1c494ac",
         query: "",
         movies: [],
+        series: [],
     },
 
     methods: {
 
-        searchMovie (params) {
+        searchMoviesAndSeries () {
             
             let search = document.getElementById("search").value;
-            let completeURL = `${this.url}?api_key=${this.apiKey}&query=${search}`
-            console.log(completeURL);
+            let completeURLM = `${this.urlM}?api_key=${this.apiKey}&query=${search}`
 
             axios
-            .get(completeURL)
+            .get(completeURLM)
             .then(resp => { 
                 this.movies = resp.data.results
                 console.log(this.movies);
@@ -34,12 +35,25 @@ const app = new Vue ({
                         this.movies[index].original_language = "US" 
                     }
                 }
-
-                console.log(this.movies[index].original_language);
-                
             })
 
-        }
+            let completeURLS = `${this.urlS}?api_key=${this.apiKey}&query=${search}`
+
+            axios
+            .get(completeURLS)
+            .then(resp => { 
+                this.series = resp.data.results
+                console.log(this.series);
+                console.log(resp);
+
+                for (let index = 0; index < this.series.length; index++) {
+                    
+                    if(this.series[index].original_language == "en") {
+                        this.series[index].original_language = "US" 
+                    } 
+                }
+            })
+        },
     },
 
     mounted () {}
